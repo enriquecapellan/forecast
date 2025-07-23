@@ -19,7 +19,7 @@ export default async function Home({ searchParams }: Props) {
         </h1>
       </div>
       <SearchForm />
-      <Suspense fallback={<WeatherResultsSkeleton />}>
+      <Suspense key={address} fallback={<WeatherResultsSkeleton />}>
         <WeatherResults address={address} />
       </Suspense>
     </main>

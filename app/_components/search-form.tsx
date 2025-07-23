@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useTransition } from "react";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -9,6 +10,8 @@ import { Label } from "@/components/label";
 
 export function SearchForm() {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [inputDisabled, setInputDisabled] = useState(false);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -17,8 +20,15 @@ export function SearchForm() {
 
     if (!address) return;
 
+    setInputDisabled(true);
+
     const params = new URLSearchParams({ address });
-    router.push(`/?${params.toString()}`);
+
+    startTransition(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate network delay
+      router.push(`/?${params.toString()}`);
+      setInputDisabled(false);
+    });
   };
 
   return (
@@ -35,11 +45,12 @@ export function SearchForm() {
               placeholder="e.g., 123 Main St, New York, NY 10001 or Los Angeles, CA"
               name="address"
               className="pl-10 pr-4 py-2 w-full"
+              disabled={inputDisabled}
             />
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           </div>
-          <Button type="submit" className="px-6">
-            Get Forecast
+          <Button type="submit" className="px-6" disabled={isPending}>
+            {isPending ? "Loading..." : "Get Forecast"}
           </Button>
         </div>
       </div>

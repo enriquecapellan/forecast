@@ -5,7 +5,6 @@ export function mapForecastToDailySummaries(periods: any[]): DailyForecast[] {
   const daysMap: Record<string, DailyForecast> = {};
 
   periods.forEach((period) => {
-    console.log(period.name)
     const baseDay = ["Tonight", "This Afternoon"].includes(period.name)
       ? "Today"
       : period.name.replace(" Night", "");
